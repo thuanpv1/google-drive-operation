@@ -1,32 +1,24 @@
-# Prerequisites
-*.d
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Runtime data
+pids
+*.pid
+*.seed
+*.lock
 
-# Precompiled Headers
-*.gch
-*.pch
+# Dependency directories
+node_modules/
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# dotenv environment variables file
+.env
+.DS_Store
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+client_secret.json
+application_credentials.json
+credentials.json
+token.json

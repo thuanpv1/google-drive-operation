@@ -72,7 +72,7 @@ function getAccessToken(oAuth2Client, callback) {
   });
 }
 
-function renameAndMoveFile(auth, file_id, target_folder, res) {
+function renameAndMoveFile(auth, file_id, fileName, target_folder, res) {
    var drive = google.drive('v3');
    drive.files.get({
        auth: auth,
@@ -87,6 +87,9 @@ function renameAndMoveFile(auth, file_id, target_folder, res) {
        console.log('file===', file)
        var previous_parents = file.data.parents.join(',');
        drive.files.update({
+          resource: {
+            name: fileName || 'untitled'
+          },
            auth: auth,
            fileId: file_id,
            addParents: target_folder,

@@ -65,12 +65,12 @@ app.get('/api/getTempToken', (req, res) => {
 })
 
 
-app.post("/api/renameAndMoveFile", (req, res) => {
-    let { fileId,  targetFolderId } = req.query
+app.get("/api/renameAndMoveFile", (req, res) => {
+    let { fileId,  fileName, targetFolderId } = req.query
     console.log('id===', fileId)
     let content = fs.readFileSync(CREDENTIAL_PATH)
     if (!targetFolderId) targetFolderId = "0B6AfxUYuFcCLZnpudExsRjQ3eWs";
-    if (content) authorize(JSON.parse(content), (auth) => renameAndMoveFile(auth, fileId, targetFolderId, res));
+    if (content) authorize(JSON.parse(content), (auth) => renameAndMoveFile(auth, fileId, fileName, targetFolderId, res));
     else res.send(false)
 });
 

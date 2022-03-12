@@ -13,4 +13,4 @@ requests to the Google Drive API.
 
 After following the quickstart setup instructions, run the sample:
 
-`node .`
+`nmp start`

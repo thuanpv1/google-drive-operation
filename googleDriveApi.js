@@ -19,20 +19,7 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 const req = require('express/lib/request');
-
-// If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
-// The file token.json stores the user's access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
-const TOKEN_PATH = './tokenweb2.json';
-
-// Load client secrets from a local file.
-// fs.readFile('credentialweb2.json', (err, content) => {
-//   if (err) return console.log('Error loading client secret file:', err);
-//   // Authorize a client with credentials, then call the Google Drive API.
-//   authorize(JSON.parse(content), uploadFile);
-// });
+const { SCOPES, TOKEN_PATH } = require('./constant');
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -85,9 +72,7 @@ function getAccessToken(oAuth2Client, callback) {
   });
 }
 
-function move(auth, file_id, res) {
-  console.log('auth===', auth)
-  var target_folder = "0B6AfxUYuFcCLZnpudExsRjQ3eWs";
+function renameAndMoveFile(auth, file_id, target_folder, res) {
    var drive = google.drive('v3');
    drive.files.get({
        auth: auth,
@@ -121,38 +106,6 @@ function move(auth, file_id, res) {
        });
      }
    });
-}
-
-
-
-
-function moveFile(auth, id, res) {
-  const drive = google.drive({version: 'v3', auth});
-  const fileMetadata = {
-    'name': 'samplehihi2.png',
-    addParents: ['0B6AfxUYuFcCLZnpudExsRjQ3eWs']
-  };
-  // const media = {
-  //   mimeType: 'application/octet-stream',
-  //   // body: data
-  //   body: fs.createReadStream('uploads/WinWebcam-2.6.8.exe')
-  // };
-  drive.files.update({
-    resource: fileMetadata,
-    // media: media,
-    fileId: id,
-    // requestBody: req.body
-  }, (err, file) => {
-    if (err) {
-      // Handle error
-      console.error(err);
-      res.send(false)
-    } else {
-      console.log('File Id: ', file, file.id);
-      console.log('finished 2====', Date.now())
-      res.send(true)
-    }
-  });
 }
 
 function uploadFile(auth, data, fileName, res) {
@@ -205,13 +158,26 @@ function listFiles(auth) {
     }
   });
 }
+
+function getTempToken(auth, resParent) {
+  const drive = google.drive({version: 'v3', auth});
+  drive.files.list({
+    pageSize: 1,
+    fields: 'nextPageToken, files(id, name)',
+  }, (err, res) => {
+    if (err) {           
+      console.log('The API returned an error: ' + err);
+      resParent.send(null)
+    }
+    resParent.send(res.config.headers || null)
+  });
+}
 // [END drive_quickstart]
 
 module.exports = {
-  SCOPES,
   listFiles,
   uploadFile,
   authorize,
-  moveFile,
-  move
+  renameAndMoveFile,
+  getTempToken
 };
